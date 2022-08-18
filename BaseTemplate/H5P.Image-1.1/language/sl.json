@@ -1,0 +1,23 @@
+{
+  "semantics": [
+    {
+      "label": "Slika"
+    },
+    {
+      "label": "Decorative only",
+      "description": "Enable this option if the image is purely decorative and does not add any information to the content on the page. It will be ignored by screen readers and not given any alternative text."
+    },
+    {
+      "label": "Nadomestno besedilo",
+      "description": "Zahtevano. Besedilo se prikaže, če spletni brskalnik ne more naložiti slike. Besedilo uporabljajo tudi \"sintetizatorji govora\" (text-to-speech readers)."
+    },
+    {
+      "label": "Besedilo ob preletu miške",
+      "description": "Neobvezno. Besedilo se prikaže, ko uporabnik sliko preleti s kazalcem miške."
+    },
+    {
+      "label": "Naslov vsebine slike",
+      "default": "Slika"
+    }
+  ]
+}

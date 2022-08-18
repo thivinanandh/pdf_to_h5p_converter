@@ -1,0 +1,23 @@
+{
+  "semantics": [
+    {
+      "label": "Imagem"
+    },
+    {
+      "label": "Decorative only",
+      "description": "Enable this option if the image is purely decorative and does not add any information to the content on the page. It will be ignored by screen readers and not given any alternative text."
+    },
+    {
+      "label": "Texto alternativo",
+      "description": "Obrigatório. Se o navegador não for capaz de exibir a imagem, este texto será exibido. Também utilizado por leitores de tela."
+    },
+    {
+      "label": "Texto flutuante",
+      "description": "Opcional. Este texto será exibido se o usuário colocar o ponteiro sobre a imagem."
+    },
+    {
+      "label": "Nome do conteúdo de imagem",
+      "default": "Imagem"
+    }
+  ]
+}

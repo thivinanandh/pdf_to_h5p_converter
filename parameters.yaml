@@ -1,0 +1,6 @@
+---
+ Input_PDF_File_Name: "Lect02-CompArchi.pdf"
+ Prefix_for_Image_Storage: "DS226_Lecture-2"
+ Output_h5p_file_name: "Lecture2"
+ DPI_of_Image: 600
+ pixelLength: 1920

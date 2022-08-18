@@ -1,0 +1,147 @@
+{
+  "semantics": [
+    {
+      "label": "Асуултуудын жагсаалт",
+      "entity": "асуулт",
+      "widgets": [
+        {
+          "label": "Ерөнхий"
+        },
+        {
+          "label": "Текст"
+        }
+      ],
+      "field": {
+        "label": "Асуулт &amp; бусад сонголтууд",
+        "fields": [
+          {
+            "label": "Асуулт"
+          },
+          {
+            "label": "Бусад сонголтууд- эхний сонголт нь зөв хариу байна.",
+            "entity": "хариулт",
+            "field": {
+              "label": "Бусад сонголтууд"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "label": "Ерөнхий зөвлөмж",
+      "fields": [
+        {
+          "widgets": [
+            {
+              "label": "Ерөнхий"
+            }
+          ],
+          "label": "Авсан онооны хязгаарт тохирсон зөвлөмж өгөх",
+          "description": "\"Зөвлөмж бичих\" гэдэг товч дээр дарж зөвлөмж бичих боломжтой. Жишээ нь: 0-20% Муу оноо, 21-91% Дундаж оноо, 91-100% Сайн оноо!",
+          "entity": "хязгаар",
+          "field": {
+            "fields": [
+              {
+                "label": "Оноо Зааг"
+              },
+              {},
+              {
+                "label": "Зөвлөмж онооны заагаар тодорхойлогдоно",
+                "placeholder": "Зөвлөмж хэсэгт нөхөж бичнэ үү"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "label": "Тохиргоо",
+      "fields": [
+        {
+          "label": "Автоматаар үргэлжлүүлэх",
+          "description": "Сонголтыг идэвхжүүлснээр дараагийн асуулт автоматаар гарч ирнэ"
+        },
+        {
+          "label": "Зөв хариултын харагдах хугацаа",
+          "description": "Миллисекунд"
+        },
+        {
+          "label": "Буруу хариултын харагдах хугацаа",
+          "description": "Миллисекунд"
+        },
+        {
+          "label": "Дууны эффектийг идэвхжүүлэх"
+        },
+        {
+          "label": "Дахин эхлэх товчийг идэвхжүүлэх"
+        },
+        {
+          "label": "Хариултыг харуулахыг зөвшөөрөх"
+        },
+        {
+          "label": "Давах хувь",
+          "description": "Шалгалтыг давахад шаардлагатай онооны хувь."
+        }
+      ]
+    },
+    {
+      "label": "Нэг сонголтой хариуг олох",
+      "fields": [
+        {
+          "label": "\"Дараагийн\" тэмдэглэгээ",
+          "default": "Дараагийн асуулт"
+        },
+        {
+          "label": "\"Хариулт харуулах\" товчны нэр",
+          "default": "Хариулт харуулах"
+        },
+        {
+          "label": "\"Дахин оролдох\" товчны нэр",
+          "default": "Дахин оролдох"
+        },
+        {
+          "label": "Хариултыг харах хэсгийн гарчиг",
+          "default": "Бодолтын жагсаалт"
+        },
+        {
+          "label": "Зөв хариултад тохирох текст уншигч",
+          "default": "Зөв!"
+        },
+        {
+          "label": "Буруу хариултад харгалзах текст уншигч",
+          "default": "Буруу!"
+        },
+        {
+          "label": "\"дууг хаах\" товчинд харгалзах нэр, дууг хаах бол дарна уу",
+          "default": "Зөвлөмжийн дууг хаах"
+        },
+        {
+          "label": "\"Хаах\" товчинд харгалзах нэр",
+          "default": "Хаах"
+        },
+        {
+          "label": "Слайдын дугаарын текст",
+          "description": "Announces current slide and total number of slides, variables are :num and :total",
+          "default": "Slide :num of :total"
+        },
+        {
+          "label": "Textual representation of the score bar for those using a readspeaker",
+          "default": "You got :num out of :total points"
+        },
+        {
+          "label": "Label for the question number in the solution list",
+          "description": "Announces current question index in solution list, variables are :num",
+          "default": "Question :num"
+        },
+        {
+          "label": "Assistive technology description for \"Show Solution\" button",
+          "default": "Show the solution. The task will be marked with its correct solution."
+        },
+        {
+          "label": "Assistive technology description for \"Retry\" button",
+          "default": "Retry the task. Reset all responses and start the task over again."
+        }
+      ]
+    }
+  ]
+}

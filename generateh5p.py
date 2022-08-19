@@ -8,29 +8,50 @@ from os.path import isfile,join
 import subprocess
 import shutil
 import time
-
-import yaml
+import sys
+from pathlib import Path
 
 
 if __name__ == "__main__":
+    """
+    This module is used to convert the given pdf slides into the h5p package
+
+Example:
+    To run the file, please use the following command:
+
+        $ python generateh5p.py <inputfilename> --dpi 300 --resolution 1920
+    
+The last two parameters (dpi) and resolution are non mandatory values 
+
+Defaults:
+    The value DPI defaults to 600 and the resolutiion defaults to 1920
+
+
+
+Todo:
+    * Add Support for Adding interactive quizzes 
+
+
+"""
+
+    if(len(sys.argv) <= 1):
+        print("Please enter the Input Argument as the name of PDF file")
+        exit(0)
+    elif(len(sys.argv) <=2):
+        inputFileName = sys.argv[1]
+        DPI = 600
+        pixel = 1920
+    else:
+        inputFileName = sys.argv[1]
+        for i in range(2,len(sys.argv)):
+            if(sys.argv[i] == "--dpi"):
+                DPI = int(sys.argv[i+1])
+            elif(sys.argv[i] == "--resolution"):
+                pixel = int(sys.argv[i+1])
     ## GLOBAL VARIABLES 
-    inputFileName  = "Lect02-CompArchi.pdf"
-    Title = "DS226_Lecture-2"
-    OPFileName = "Lecture2"
-
-
-    ## Read Yaml files 
-    with open ("parameters.yaml" , "r") as f:
-        param = yaml.safe_load(f)
-
-    ## assign Parameter Values 
-    inputFileName = param["Input_PDF_File_Name"] 
-    Title = param["Prefix_for_Image_Storage"] 
-    OPFileName = param["Output_h5p_file_name"]
-    DPI = param["DPI_of_Image"]
-    pixel = param["pixelLength"]
-
-
+    
+    Title = Path(inputFileName).stem
+    OPFileName = Path(inputFileName).stem
 
     with open ("contentBase/content.json","r") as f:
         jsonData = json.load(f)
@@ -40,7 +61,9 @@ if __name__ == "__main__":
     SlideDataBase = copy.deepcopy(jsonData['presentation']['slides'][0])
 
     ## remove content directory
-    shutil.rmtree('content')
+    dirpath = Path('.')/'content'
+    if os.path.exists(dirpath) and os.path.isdir(dirpath):
+        shutil.rmtree('content')
 
     ## make a new content directory
     os.system("mkdir -p content")
@@ -71,7 +94,6 @@ if __name__ == "__main__":
 
 
     ## Extract all the pdf as images
-
     p1 = subprocess.call(f'pdftoppm -png -r {DPI} -scale-to {pixel} {inputFileName} image-{Title}'.split(" "), cwd="content/images/") 
 
 
@@ -92,21 +114,20 @@ if __name__ == "__main__":
     ## create a new folder and copy contents over there 
     p1 = subprocess.call(f'cp -r BaseTemplate/ {OPFileName}'.split(" "))
 
-
+    ## Sort them Alphabeticallty
     imageFiles.sort()
+
+    print("Converting the PDF File into h5p..!")
+
+
     ## Create a Slide for each image 
     for image in imageFiles:
-        print("-------------------------------------")
-        print(image)
-        print(currSlide)
-
         currSlide = copy.deepcopy(SlideDataBase)
         currSlide['elements'][0]['action']['params']['file']['path'] = f"images/{image}"
         currSlide['elements'][0]['action']['subContentId'] = generateSubContentID()
 
         jsonData['presentation']['slides'].append(currSlide)
 
-        print(currSlide)
 
 
     ## Write the current json to content folder 
@@ -125,3 +146,5 @@ if __name__ == "__main__":
 
     ## remove folder 
     p1 = subprocess.call(f'rm -r {OPFileName}/'.split(" "))
+
+    print(f"[ Message: ] {OPFileName}.h5p Successfully generated")

@@ -24,7 +24,7 @@ There is no specifix installation instructions for the same. Just clone the code
 - Then just run `python3 generateh5p.py <pdfFileNameToBeConverted>` 
     For Eg:
         ```
-        python3 generateh5p.py lecture.py
+        python3 generateh5p.py lecture.pdf
         ```
 - The program also accepts additional parameters such as `dpi` and `resolution` of the image. The default values are `dpi=600` and `resolution=1920`. If you have to change the parameters, then run using 
 ```

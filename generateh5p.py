@@ -9,6 +9,7 @@ import subprocess
 import shutil
 import time
 import sys
+import uuid
 from pathlib import Path
 
 
@@ -74,20 +75,6 @@ Todo:
     p1 = subprocess.call("mkdir -p content/images".split(" ")) 
 
 
-
-    ## Generate  Substring 
-    def generateSubContentID():
-        lenStr = [8,4,4,4,12]
-        mainStr= ""
-        for count,i in enumerate(lenStr):
-            k = ''.join(random.choices(string.ascii_lowercase + string.digits, k=i))
-            if(count != 0):
-                mainStr += "-"+k
-            else:
-                mainStr = k
-        return mainStr
-
-
     ## Extract all the image files to Folder images
     # Copy the PDF to the content folder 
     p1 = subprocess.call(f'cp {inputFileName} content/images/'.split(" ")) 
@@ -124,7 +111,7 @@ Todo:
     for image in imageFiles:
         currSlide = copy.deepcopy(SlideDataBase)
         currSlide['elements'][0]['action']['params']['file']['path'] = f"images/{image}"
-        currSlide['elements'][0]['action']['subContentId'] = generateSubContentID()
+        currSlide['elements'][0]['action']['subContentId'] = str(uuid.uuid4())
 
         jsonData['presentation']['slides'].append(currSlide)
 

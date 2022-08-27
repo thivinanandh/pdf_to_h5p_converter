@@ -53,6 +53,8 @@ Todo:
                 DPI = int(sys.argv[i+1])
             elif(sys.argv[i] == "--resolution"):
                 pixel = int(sys.argv[i+1])
+            elif(sys.argv[i] == "--webOutput"):
+                webOutputdir = sys.argv[i+1]
     ## GLOBAL VARIABLES 
     
     Title = Path(inputFileName).stem
@@ -84,7 +86,7 @@ Todo:
 
     ## Extract all the image files to Folder images
     # Copy the PDF to the content folder 
-    p1 = subprocess.call(f'cp {inputFileName} {imagePath}'.split(" ")) 
+    p1 = subprocess.call(f'cp {webOutputdir}/{inputFileName} {imagePath}'.split(" ")) 
 
 
     ## Extract all the pdf as images
@@ -154,6 +156,9 @@ Todo:
 
     ## remove folder 
     p1 = subprocess.call(f'rm -r {OPFileName}/'.split(" "))
+
+    ## Copy file to webconfig folder for downloading
+    p1 = subprocess.call(f'mv {OPFileName}.h5p {webOutputdir}/'.split(' '))
 
 
     os.chdir(home_dir_path)

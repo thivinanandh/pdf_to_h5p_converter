@@ -65,7 +65,7 @@ def get_output():
         res = request.form['resolution']
         print("Call Main Function --------------------------")
         p1 = subprocess.call(f"python3 generateh5p.py {filename}{file_extension}  --dpi {dpi} --resolution {res} --webOutput {uploads_dir}".split(" ")) 
-        p1 = subprocess.call(f"mv {filename}{file_extension}  out{file_extension} ".split(" ")) 
+        p1 = subprocess.call(f"mv {uploads_dir}/{filename}{file_extension}  {uploads_dir}/out{file_extension} ".split(" ")) 
         number = 1 ## Place Holder for the Render script 
         Global_H5pFileName = os.path.join(app.config['UPLOAD_FOLDER'], secure_filename(f"{filename}.h5p"))
         

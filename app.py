@@ -78,6 +78,7 @@ def download():
     if request.method == 'POST':
         return send_file(os.path.join(app.config['UPLOAD_FOLDER'], secure_filename(f"out.h5p")) , as_attachment=True)
 
+    return send_file(os.path.join(app.config['UPLOAD_FOLDER'], secure_filename(f"out.h5p")) , as_attachment=True)
 
 
 if __name__ == "__main__":

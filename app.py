@@ -20,6 +20,7 @@ print(f'{uploads_dir=}')
 os.makedirs(uploads_dir, exist_ok=True)
 
 app.config['UPLOAD_FOLDER'] = uploads_dir
+app.config['h5pName'] = ""
 
 ##Global variable for fileName
 Global_H5pFileName = ""
@@ -72,6 +73,7 @@ def get_output():
 @app.route("/download", methods = ['GET', 'POST'])
 def download():
     if request.method == 'POST':
+        print(app.config['h5pName'])
         return send_file(app.config['h5pName'], as_attachment=True)
 
 

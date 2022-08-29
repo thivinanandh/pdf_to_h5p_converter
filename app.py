@@ -1,6 +1,6 @@
 from glob import glob
 import os
-from flask import Flask, render_template, request,send_file, url_for
+from flask import Flask, render_template, request,send_file, url_for,send_from_directory
 import os
 # import cv2
 import base64
@@ -34,11 +34,12 @@ def index():
     return render_template("index.html")
 
 
-@app.route("/download", methods = ['GET','POST'])
-def download():
-    if request.method == 'POST':
-       path = f"{Global_H5pFileName}"
-    return send_file(path, as_attachment=True)
+# @app.route("/download", methods = ['GET','POST'])
+# global
+# def download():
+#     if request.method == 'POST':
+#        path = f"{Global_H5pFileName}"
+#     return send_file(path, as_attachment=True)
     
 
 
@@ -69,13 +70,13 @@ def get_output():
 
 
 @app.route("/download", methods = ['GET', 'POST'])
-def get_download():
-    global Global_H5pFileName
-    global Global_h5pBasefile
-    print(f"{Global_H5pFileName=}")
-    print(f"{Global_h5pBasefile=}")
-    return send_file(Global_H5pFileName,as_attachment=True)
-    pass
+def download():
+    if request.method == 'POST':
+        global Global_H5pFileName
+        global Global_h5pBasefile
+        print(f"{Global_H5pFileName=}")
+        print(f"{Global_h5pBasefile=}")
+        return send_file(Global_H5pFileName, as_attachment=True)
 
 
 

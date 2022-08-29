@@ -1,1 +1,6 @@
-libpoppler-utils
+libpoppler-cpp0v5
+libpoppler-glib8
+libpoppler-qt5-1
+libpoppler97
+poppler-data
+poppler-utils

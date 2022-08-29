@@ -1,3 +1,4 @@
+from glob import glob
 import os
 from flask import Flask, render_template, request,send_file, url_for
 import os
@@ -23,6 +24,7 @@ app.config['UPLOAD_FOLDER'] = uploads_dir
 ##Global variable for fileName
 Global_H5pFileName = ""
 Global_ConversionSuccessfull = ""
+Global_h5pBasefile = ""
 
 @app.route("/")
 def index():
@@ -43,9 +45,11 @@ def download():
 @app.route("/submit", methods = ['GET', 'POST'])
 def get_output():
     global Global_H5pFileName
+    global Global_h5pBasefile
     if request.method == 'POST':
         pdf = request.files['my_pdf_file']
         filename, file_extension = os.path.splitext(pdf.filename)
+        Global_h5pBasefile = filename
         print(f'{file_extension=}')
         print(f"Current working Directory : {os.getcwd()}")
         print(f"{os.listdir(os.getcwd())=}") 
@@ -67,9 +71,10 @@ def get_output():
 @app.route("/download", methods = ['GET', 'POST'])
 def get_download():
     global Global_H5pFileName
+    global Global_h5pBasefile
     if request.method == 'POST':
         print(f"{Global_H5pFileName=}")
-        return send_file(Global_H5pFileName,as_attachment=True)
+        return send_file(f"/app/instance/uploads/{Global_h5pBasefile}.h5p",as_attachment=True)
         pass
 
 

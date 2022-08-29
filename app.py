@@ -29,6 +29,7 @@ Global_h5pBasefile = ""
 
 @app.route("/")
 def index():
+    app.config['UPLOAD_FOLDER'] = uploads_dir
     ### delete all files in the uploads_dir
     p1 = subprocess.call(f"rm {uploads_dir}/*.pdf".split(" ")) 
     p1 = subprocess.call(f"rm {uploads_dir}/*.h5p".split(" ")) 
@@ -66,7 +67,7 @@ def get_output():
         p1 = subprocess.call(f"python3 generateh5p.py {filename}{file_extension}  --dpi {dpi} --resolution {res} --webOutput {uploads_dir}".split(" ")) 
         number = 1 ## Place Holder for the Render script 
         Global_H5pFileName = os.path.join(app.config['UPLOAD_FOLDER'], secure_filename(f"{filename}.h5p"))
-        app.config['h5pName'] = os.path.join(app.config['UPLOAD_FOLDER'], secure_filename(f"{filename}.h5p"))
+        app.config['UPLOAD_FOLDER'] = os.path.join(app.config['UPLOAD_FOLDER'], secure_filename(f"{filename}.h5p"))
     return render_template("index.html", prediction = number, file_name = Global_H5pFileName)
 
 
@@ -74,7 +75,7 @@ def get_output():
 def download():
     if request.method == 'POST':
         print(app.config['h5pName'])
-        return send_file(app.config['h5pName'], as_attachment=True)
+        return send_file(app.config['UPLOAD_FOLDER'] , as_attachment=True)
 
 
 

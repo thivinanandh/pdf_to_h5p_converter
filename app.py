@@ -68,6 +68,7 @@ def get_output():
 def get_download():
     global Global_H5pFileName
     if request.method == 'POST':
+        print(f"{Global_H5pFileName=}")
         return send_file(Global_H5pFileName,as_attachment=True)
         pass
 

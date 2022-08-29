@@ -65,17 +65,17 @@ def get_output():
         res = request.form['resolution']
         print("Call Main Function --------------------------")
         p1 = subprocess.call(f"python3 generateh5p.py {filename}{file_extension}  --dpi {dpi} --resolution {res} --webOutput {uploads_dir}".split(" ")) 
+        p1 = subprocess.call(f"mv {filename}{file_extension}  out{file_extension} ".split(" ")) 
         number = 1 ## Place Holder for the Render script 
         Global_H5pFileName = os.path.join(app.config['UPLOAD_FOLDER'], secure_filename(f"{filename}.h5p"))
-        app.config['UPLOAD_FOLDER'] = os.path.join(app.config['UPLOAD_FOLDER'], secure_filename(f"{filename}.h5p"))
+        
     return render_template("index.html", prediction = number, file_name = Global_H5pFileName)
 
 
 @app.route("/download", methods = ['GET', 'POST'])
 def download():
     if request.method == 'POST':
-        print(app.config['h5pName'])
-        return send_file(app.config['UPLOAD_FOLDER'] , as_attachment=True)
+        return send_file(os.path.join(app.config['UPLOAD_FOLDER'], secure_filename(f"out.h5p")) , as_attachment=True)
 
 
 

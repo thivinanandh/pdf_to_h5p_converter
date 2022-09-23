@@ -2,6 +2,10 @@
 
 This code is used to convert the PDF files into a h5p interactive slide for uploading it to learning management sites like moodle 
 
+The App is now deployed on [Heroku](https://h5p2pdf.herokuapp.com)
+
+
+**Note: If you have a problem while uploading the h5p file, then just open the file with "LUMI" , save it and then upload the file**
 
 ## Prerequisites 
 

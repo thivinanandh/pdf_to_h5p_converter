@@ -46,6 +46,7 @@ Todo:
         inputFileName = sys.argv[1]
         DPI = 600
         pixel = 1920
+        webOutputdir = "."
     else:
         inputFileName = sys.argv[1]
         for i in range(2,len(sys.argv)):

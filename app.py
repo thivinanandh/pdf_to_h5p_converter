@@ -1,86 +1,153 @@
-from glob import glob
 import os
-from flask import Flask, render_template, request,send_file, url_for,send_from_directory
-import os
-# import cv2
-import base64
-import json
+import logging
 import subprocess
+from flask import Flask, render_template, request, redirect, url_for, send_file, flash
 from werkzeug.utils import secure_filename
 
+# -----------------------------------------------------
+# CONFIGURATION
+# -----------------------------------------------------
+BASE_DIR = os.path.abspath(os.path.dirname(__file__))
+UPLOAD_FOLDER = os.path.join(BASE_DIR, "instance", "uploads")
+ALLOWED_EXTENSIONS = {"pdf"}
+
+# Ensure uploads directory exists
+os.makedirs(UPLOAD_FOLDER, exist_ok=True)
+
+app = Flask(__name__)
+app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
+app.secret_key = "super-secret-key"
+
+# -----------------------------------------------------
+# LOGGING CONFIGURATION
+# -----------------------------------------------------
+log_file = os.path.join(BASE_DIR, "app.log")
+logging.basicConfig(
+    filename=log_file,
+    level=logging.DEBUG,
+    format="%(asctime)s [%(levelname)s] %(message)s",
+    datefmt="%Y-%m-%d %H:%M:%S",
+)
+logger = logging.getLogger(__name__)
+
+# -----------------------------------------------------
+# HELPER FUNCTIONS
+# -----------------------------------------------------
+def allowed_file(filename):
+    return "." in filename and filename.rsplit(".", 1)[1].lower() in ALLOWED_EXTENSIONS
 
 
+def generate_h5p(input_pdf_path, dpi, resolution, output_dir):
+    """Run generateh5p.py and return True if successful."""
+    try:
+        cmd = [
+            "python3",
+            "generateh5p.py",
+            input_pdf_path,
+            "--dpi", str(dpi),
+            "--resolution", str(resolution),
+            "--webOutput", output_dir,
+        ]
 
+        logger.info(f"Running command: {' '.join(cmd)}")
+        process = subprocess.run(
+            cmd,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            text=True,
+        )
 
-app = Flask(__name__,static_url_path='', 
-            static_folder='static')
+        logger.debug(f"STDOUT:\n{process.stdout}")
+        logger.debug(f"STDERR:\n{process.stderr}")
 
-uploads_dir = os.path.join(app.instance_path, 'uploads')
-print(f'{uploads_dir=}')
-os.makedirs(uploads_dir, exist_ok=True)
+        if process.returncode != 0:
+            logger.error(f"generateh5p.py failed with exit code {process.returncode}")
+            return False
 
-app.config['UPLOAD_FOLDER'] = uploads_dir
-app.config['h5pName'] = ""
+        return True
 
-##Global variable for fileName
-Global_H5pFileName = ""
-Global_ConversionSuccessfull = ""
-Global_h5pBasefile = ""
+    except Exception as e:
+        logger.exception(f"Exception while running generateh5p.py: {e}")
+        return False
 
+# -----------------------------------------------------
+# ROUTES
+# -----------------------------------------------------
 @app.route("/")
 def index():
-    app.config['UPLOAD_FOLDER'] = uploads_dir
-    ### delete all files in the uploads_dir
-    p1 = subprocess.call(f"rm {uploads_dir}/*.pdf".split(" ")) 
-    p1 = subprocess.call(f"rm {uploads_dir}/*.h5p".split(" ")) 
     return render_template("index.html")
 
 
-# @app.route("/download", methods = ['GET','POST'])
-# global
-# def download():
-#     if request.method == 'POST':
-#        path = f"{Global_H5pFileName}"
-#     return send_file(path, as_attachment=True)
-    
+@app.route("/submit", methods=["POST"])
+def submit():
+    try:
+        # Ensure the form field name matches index.html
+        if "my_pdf_file" not in request.files:
+            flash("No file part in the request.")
+            return redirect(request.url)
+
+        file = request.files["my_pdf_file"]
+        if file.filename == "":
+            flash("No file selected.")
+            return redirect(request.url)
+
+        if file and allowed_file(file.filename):
+            filename = secure_filename(file.filename)
+            file_path = os.path.join(app.config["UPLOAD_FOLDER"], filename)
+            file.save(file_path)
+
+            logger.info(f"Uploaded PDF saved at: {file_path}")
+
+            # Get additional params from the form
+            dpi = request.form.get("dpi", 600)
+            resolution = request.form.get("resolution", 1920)
+
+            # Run H5P generation
+            success = generate_h5p(file_path, dpi, resolution, app.config["UPLOAD_FOLDER"])
+
+            h5p_filename = os.path.splitext(filename)[0] + ".h5p"
+            h5p_path = os.path.join(app.config["UPLOAD_FOLDER"], h5p_filename)
+            out_h5p_path = os.path.join(app.config["UPLOAD_FOLDER"], "out.h5p")
+
+            if success and os.path.exists(h5p_path):
+                os.replace(h5p_path, out_h5p_path)
+                logger.info(f"Generated H5P saved at: {out_h5p_path}")
+                return render_template("index.html", prediction=True, file_name=out_h5p_path)
+            else:
+                logger.error("H5P generation failed or file missing.")
+                flash("Failed to generate H5P file. Check logs for details.")
+                return redirect(url_for("index"))
+
+        else:
+            flash("Invalid file format. Please upload a PDF.")
+            return redirect(url_for("index"))
+
+    except Exception as e:
+        logger.exception(f"Error in /submit: {e}")
+        flash("Unexpected error occurred. Check logs.")
+        return redirect(url_for("index"))
 
 
-@app.route("/submit", methods = ['GET', 'POST'])
-def get_output():
-    global Global_H5pFileName
-    global Global_h5pBasefile
-    if request.method == 'POST':
-        pdf = request.files['my_pdf_file']
-        filename, file_extension = os.path.splitext(pdf.filename)
-        Global_h5pBasefile = filename
-        print(f'{file_extension=}')
-        print(f"Current working Directory : {os.getcwd()}")
-        print(f"{os.listdir(os.getcwd())=}") 
-        # p1 = subprocess.call(f"rm *.pdf".split(" ")) 
-        # p1 = subprocess.call(f"rm *.h5p".split(" ")) 
-        print(os.path.join(app.config['UPLOAD_FOLDER'], secure_filename(f"{filename}{file_extension}")))
-        pdf.save(os.path.join(app.config['UPLOAD_FOLDER'], secure_filename(f"{filename}{file_extension}")))
-        print(f"{filename}{file_extension}")
-        dpi = request.form['dpi']
-        res = request.form['resolution']
-        print("Call Main Function --------------------------")
-        p1 = subprocess.call(f"python3 generateh5p.py {filename}{file_extension}  --dpi {dpi} --resolution {res} --webOutput {uploads_dir}".split(" ")) 
-        p1 = subprocess.call(f"mv {uploads_dir}/{filename}.h5p {uploads_dir}/out.h5p".split(" ")) 
-        
-        number = 1 ## Place Holder for the Render script 
-        Global_H5pFileName = os.path.join(app.config['UPLOAD_FOLDER'], secure_filename(f"{filename}.h5p"))
-        
-    return render_template("index.html", prediction = number, file_name = Global_H5pFileName)
-
-
-@app.route("/download", methods = ['GET', 'POST'])
+@app.route("/download", methods=["GET"])
 def download():
-    if request.method == 'POST':
-        return send_file(os.path.join(app.config['UPLOAD_FOLDER'], secure_filename(f"out.h5p")) , as_attachment=True)
+    try:
+        out_h5p_path = os.path.join(app.config["UPLOAD_FOLDER"], "out.h5p")
+        if not os.path.exists(out_h5p_path):
+            logger.error("Attempted to download non-existent H5P file.")
+            flash("H5P file not found. Please regenerate.")
+            return redirect(url_for("index"))
 
-    return send_file(os.path.join(app.config['UPLOAD_FOLDER'], secure_filename(f"out.h5p")) , as_attachment=True)
+        logger.info("H5P file downloaded successfully.")
+        return send_file(out_h5p_path, as_attachment=True)
+
+    except Exception as e:
+        logger.exception(f"Error in /download: {e}")
+        return "Internal Server Error", 500
 
 
+# -----------------------------------------------------
+# MAIN ENTRY POINT
+# -----------------------------------------------------
 if __name__ == "__main__":
-    app.run(debug=True)
-    
+    logger.info("Starting Flask server...")
+    app.run(host="127.0.0.1", port=8000, debug=True)

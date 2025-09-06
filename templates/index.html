@@ -1,177 +1,170 @@
 <!doctype html>
 <html lang="en">
-
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <meta name="description" content="">
-    <meta name="author" content="">
-    <!-- <link rel="icon" href="/docs/4.1/assets/img/favicons/favicon.ico"> -->
+    <meta name="description" content="PDF to H5P Converter">
+    <meta name="author" content="thivinanandh">
 
-    <title>pdf to h5p Converter</title>
+    <title>PDF to H5P Converter</title>
 
+    <!-- Local Bootstrap CSS -->
+    <link href="{{ url_for('static', filename='bootstrap.min.css') }}" rel="stylesheet">
 
-    <!-- Bootstrap core CSS -->
-    <link href="/bootstrap.min.css" rel="stylesheet">
+    <!-- Custom Styles -->
+    <link href="{{ url_for('static', filename='style.css') }}" rel="stylesheet">
 
-    <!-- Custom styles for this template -->
-    <link href="starter-template.css" rel="stylesheet">
-
-    <!-- For icons  -->
+    <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
-
+    <style>
+        body {
+            background-color: #f8f9fa;
+            padding-top: 70px;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        .container {
+            max-width: 700px;
+        }
+        .drag-area {
+            border: 2px dashed #0d6efd;
+            border-radius: 12px;
+            padding: 30px;
+            text-align: center;
+            background-color: #f1f9ff;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        .drag-area:hover {
+            background-color: #e6f2ff;
+        }
+        footer {
+            margin-top: 30px;
+            text-align: center;
+            font-size: 14px;
+            color: #555;
+        }
+    </style>
 </head>
-
 <body>
 
-    <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
-        <a class="navbar-brand" href="#">PDF to h5p Converter</a>
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault"
-            aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top shadow">
+        <div class="container">
+            <a class="navbar-brand fw-bold" href="#">PDF to H5P Converter</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navMenu" aria-controls="navMenu" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
 
-        <div class="collapse navbar-collapse" id="navbarsExampleDefault">
-            <ul class="navbar-nav mr-auto">
-                <li class="nav-item active">
-                    <a class="nav-link" href="." id="HomeButton">Home <span class="sr-only">(current)</span></a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#">Link</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link disabled" href="#">Disabled</a>
-                </li>
-            </ul>
-            <form class="form-inline my-2 my-lg-0">
-                <input class="form-control mr-sm-2" type="text" placeholder="Search" aria-label="Search">
-                <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
-            </form>
+            <div class="collapse navbar-collapse" id="navMenu">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link active" href=".">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="https://github.com/thivinanandh/pdf_to_h5p_converter" target="_blank">GitHub</a>
+                    </li>
+                </ul>
+            </div>
         </div>
     </nav>
 
-    <main role="main" class="container" style="height: 150px;">
+    <!-- Main Container -->
+    <div class="container bg-white shadow rounded p-4">
+        <h2 class="text-center text-primary mb-3">PDF to H5P Converter</h2>
+        <p class="text-center text-muted">Upload your PDF slides to generate interactive H5P content instantly.</p>
 
-        <div class="starter-template" style="padding: 10px;">
-            <h1>PDF to h5p Converter</h1>
-            <p class="lead"> Upload an PDF to generate h5p content<br>
-        </div>
-
-    </main><!-- /.container -->
-    <div class="container-fluid  justify-content-center align-items-center" style="height:200px">
-        <div class="col-md-12  " style=" padding-top: 10px;">
-            <form class="form-horizontal justify-content-center align-items-center" action="/submit" method="post"
-                enctype="multipart/form-data">
-                <div class="form-group">
-                    <label class="control-label col-sm-6" for="pwd" style="min-width: 500px;"></label>
-                    <div class="col-sm-6">
-                        <input type="file" class="form-control"id="my_pdf_file" name="my_pdf_file" accept=".pdf" onchange="SubmitButtonEnabler(validateddpi,validatedres)">
-                    </div>
-                    <div class="col-sm-6">
-                        <label for="dpi">DPI (Enter value between 100 and 800):</label><br>
-                        <input type="text" id="dpi" name="dpi" value="600" onkeyup='validate_dpi()'><br>
-                    </div>
-                    <div class="col-sm-6">
-                        <label for="dpi">Resolution (Enter value between 400 and 3000):</label><br>
-                        <input type="text" id="resolution" name="resolution" value="1980"  onkeyup='validate_resolution()'><br>
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <div class="col-sm-offset-2 col-sm-10">
-                        <button type="submit" class="btn btn-success" id="submitBtn">Upload and convert</button>
-                    </div>
-                </div>
-            </form>
-        </div>
-
-
-
-    </div>
-    </div>
-    {% if prediction %}
-    <br />
-    <br />
-    <br />
-    <div class="container-fluid  justify-content-center align-items-center">
-        <div class="row justify-content-center align-items-center" style="background-color: rgb(172, 218, 243);">
-            <form class="form-horizontal justify-content-center align-items-center" action="/download" method="post"
-            enctype="multipart/form-data">
-            <div class="form-group">
-                <div class="col-sm-offset-2 col-sm-10">
-                    <button type="submit" class="btn btn-success" id="submitBtnDownload">Download h5p</button>
-                </div>
+        <!-- Upload Form -->
+        <form action="/submit" method="POST" enctype="multipart/form-data">
+            <div class="drag-area mb-3" onclick="document.getElementById('my_pdf_file').click()">
+                <h5>📄 Drag & Drop your PDF or Click to Browse</h5>
+                <input type="file" class="form-control" id="my_pdf_file" name="my_pdf_file" accept=".pdf" hidden onchange="SubmitButtonEnabler(validateddpi,validatedres)">
             </div>
+
+            <!-- DPI Input -->
+            <div class="mb-3">
+                <label for="dpi" class="form-label">DPI (100 - 800)</label>
+                <input type="number" id="dpi" name="dpi" class="form-control" value="600" onkeyup='validate_dpi()'>
+            </div>
+
+            <!-- Resolution Input -->
+            <div class="mb-3">
+                <label for="resolution" class="form-label">Resolution (400 - 3000)</label>
+                <input type="number" id="resolution" name="resolution" class="form-control" value="1920" onkeyup='validate_resolution()'>
+            </div>
+
+            <!-- Submit Button -->
+            <div class="d-grid">
+                <button type="submit" class="btn btn-success btn-lg" id="submitBtn">🚀 Upload & Convert</button>
+            </div>
+        </form>
+
+        <!-- Download Button -->
+        {% if prediction %}
+        <div class="mt-4">
+            <form action="/download" method="get">
+                <div class="d-grid">
+                    <button type="submit" class="btn btn-primary btn-lg" id="submitBtnDownload">⬇️ Download H5P</button>
+                </div>
             </form>
         </div>
+        {% endif %}
 
+        <!-- GitHub Star Button -->
+        <div class="text-center mt-4">
+            <a class="github-button" href="https://github.com/thivinanandh/pdf_to_h5p_converter" data-icon="octicon-star" data-size="large" data-show-count="true" aria-label="Star thivinanandh/pdf_to_h5p_converter on GitHub">⭐ Star on GitHub</a>
+        </div>
     </div>
-    {% endif %}
 
+    <!-- Footer -->
+    <footer>
+        <p>Built with ❤️ by <a href="https://github.com/thivinanandh" target="_blank">thivinanandh</a></p>
+    </footer>
 
-    <!-- Bootstrap core JavaScript
-    ================================================== -->
-    <!-- Placed at the end of the document so the pages load faster -->
+    <!-- GitHub Buttons -->
+    <script async defer src="https://buttons.github.io/buttons.js"></script>
 
+    <!-- Local JS Files -->
+    <script src="{{ url_for('static', filename='jquery-3.3.1.slim.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='popper.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='bootstrap.min.js') }}"></script>
+
+    <!-- Existing Scripts -->
     <script>
-
         let validateddpi = true;
         let validatedres = true;
-        let uploadButtonDOM = document.getElementById("submitBtn")
+        let uploadButtonDOM = document.getElementById("submitBtn");
         SubmitButtonEnabler();
 
-        function SubmitButtonEnabler(validateddpi,validatedres)
-        {
-            if(validateddpi == false || validatedres == false || document.getElementById("my_pdf_file").files.length == 0)
-                uploadButtonDOM.disabled= true
+        function SubmitButtonEnabler(validateddpi, validatedres) {
+            if (!validateddpi || !validatedres || document.getElementById("my_pdf_file").files.length === 0)
+                uploadButtonDOM.disabled = true;
             else
                 uploadButtonDOM.disabled = false;
-            
         }
-        
 
-
-        let dpiDOM = document.getElementById("dpi")
-        let resolutionDOM = document.getElementById("resolution")
-
+        let dpiDOM = document.getElementById("dpi");
+        let resolutionDOM = document.getElementById("resolution");
 
         function validate_dpi() {
             if (dpiDOM.value < 100 || dpiDOM.value > 900) {
-                alert("Enter dpi value within Range")
-                // dpiDOM.value = 600
-                validateddpi = false
+                alert("Enter DPI within the valid range (100-800)");
+                validateddpi = false;
+            } else {
+                validateddpi = true;
             }
-            else
-            {
-                validateddpi = true
-            } 
-            SubmitButtonEnabler(validateddpi,validatedres)
-
-
+            SubmitButtonEnabler(validateddpi, validatedres);
         }
-
 
         function validate_resolution() {
             if (resolutionDOM.value < 500 || resolutionDOM.value > 3000) {
-                alert("Enter resolution value within range")
-                // resolutionDOM.value = 1920
-                validatedres = false
-            } 
-            else
-            {
+                alert("Enter resolution within range (500-3000)");
+                validatedres = false;
+            } else {
                 validatedres = true;
             }
-            SubmitButtonEnabler(validateddpi,validatedres)
+            SubmitButtonEnabler(validateddpi, validatedres);
         }
-
-
-
     </script>
-    <script src="jquery-3.3.1.slim.min.js"></script>
-    <!-- <script>window.jQuery || document.write('<script src="../../assets/js/vendor/jquery-slim.min.js"><\/script>')</script> -->
-    <script src="popper.min.js"></script>
-    <script src="bootstrap.min.js"></script>
 </body>
-
 </html>
